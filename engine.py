@@ -38,15 +38,17 @@ def train_one_epoch(model: torch.nn.Module, criterion: DistillationLoss,
         if mixup_fn is not None:
             new_samples, new_targets, smmix_data = mixup_fn(samples, targets,model)
             if smmix_data is None:  # mixup
-                outputs, _ = model(new_samples)
-                loss = criterion(new_samples, outputs, new_targets)
+                with torch.cuda.amp.autocast():
+                    outputs, _ = model(new_samples)
+                    loss = criterion(new_samples, outputs, new_targets)
             else:
                 target_target, source_target, target_mask, source_mask, mixed_prediction_distribution = smmix_data
-                outputs, target_result, source_result = model(new_samples, target_mask, source_mask)
-                loss_cls = criterion(new_samples, outputs, new_targets)
-                loss_fine = 1/2*(criterion(new_samples, target_result, target_target)+criterion(new_samples, source_result, source_target))
-                loss_con = kl_layer(F.log_softmax(outputs, dim=1), F.softmax(mixed_prediction_distribution, dim=1))
-                loss = loss_cls + loss_fine + loss_con        
+                with torch.cuda.amp.autocast():
+                    outputs, target_result, source_result = model(new_samples, target_mask, source_mask)
+                    loss_cls = criterion(new_samples, outputs, new_targets)
+                    loss_fine = 1/2*(criterion(new_samples, target_result, target_target)+criterion(new_samples, source_result, source_target))
+                    loss_con = kl_layer(F.log_softmax(outputs, dim=1), F.softmax(mixed_prediction_distribution, dim=1))
+                    loss = loss_cls + loss_fine + loss_con        
 
         loss_value = loss.item()
 
