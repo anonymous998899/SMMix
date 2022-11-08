@@ -11,9 +11,7 @@ def mixup_target(target, num_classes, lam=1., smoothing=0.0, device='cuda'):
     on_value = 1. - smoothing + off_value
     y1 = one_hot(target, num_classes, on_value=on_value, off_value=off_value, device=device)
     y2 = one_hot(target.flip(0), num_classes, on_value=on_value, off_value=off_value, device=device)
-    target_target = y1 * lam
-    source_target = y2 * (1. - lam)
-    mixed_target = target_target +  source_target
+    mixed_target = y1 * lam + y2 * (1. - lam)
     return mixed_target, y1, y2
 
 
@@ -120,6 +118,7 @@ class SMMix(Mixup):
                 un_mixed_prediction_distribution,attn = motivat_model(x)
                 motivat_model.train()
             rectangle_size = random.choice(self.rectangle_size_list)
+            # Following the original Mixup code of Timm codebase, lam indicates the area ratio of target image, which is equal to the (1-\lambda) in the paper.
             lam = (self.side**2-rectangle_size[0]*rectangle_size[1])/self.side**2
             x,target_mask, source_mask = self.smmix(x, attn, rectangle_size)
             mixed_target, target_target, source_target= mixup_target(target, self.num_classes, lam, self.label_smoothing, x.device) # tuple or tensor
