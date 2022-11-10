@@ -52,8 +52,8 @@ examples:
 ```
 examples:
 ```
-./script/train.sh --data-path /media/DATASET/ImageNet --model pvt_small --resume ./log/pvt_small_smmix
+./script/train.sh --data-path /media/DATASET/ImageNet --model pvt_small --output_dir ./log/pvt_small_smmix
 ```
 ```
-./script/train.sh --data-path /media/DATASET/ImageNet --model vit_deit_small_patch16_224 --resume ./log/deit_small_smmix
+./script/train.sh --data-path /media/DATASET/ImageNet --model vit_deit_small_patch16_224 --output_dir ./log/deit_small_smmix
 ```
