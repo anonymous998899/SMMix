@@ -14,11 +14,11 @@ This a Pytorch implementation of our paper "SMMix: Self-Motivated Image Mixing f
 ImageNet
 ├── train
 │   ├── folder 1 (class 1)
-│   ├── folder 2 (class 1)
+│   ├── folder 2 (class 2)
 │   ├── ...
 ├── val
 │   ├── folder 1 (class 1)
-│   ├── folder 2 (class 1)
+│   ├── folder 2 (class 2)
 │   ├── ...
 
 ```
